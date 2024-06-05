@@ -1,5 +1,6 @@
 package com.example.publicwifimap;
 
+import com.example.publicwifimap.data.JsonResult;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 
@@ -18,9 +19,9 @@ class APITest {
     final String URL = "http://openapi.seoul.go.kr:8088";
     final String SERVICE = "TbPublicWifiInfo";
 
-    final String START_IDX = "1";
+    final String START_IDX = "24593";
 
-    final String END_IDX = "100";
+    final String END_IDX = "24600";
 
     @Test
     void get() throws IOException {
@@ -67,7 +68,7 @@ class APITest {
         System.out.println("----------");
 
         JsonResult result = new Gson().fromJson(sb.toString(), JsonResult.class);
-        System.out.println(result);
+        System.out.println(result.getTbPublicWifiInfo().getRowList().get(0));
     }
 
     @Test

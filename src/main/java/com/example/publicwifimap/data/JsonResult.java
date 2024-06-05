@@ -1,4 +1,4 @@
-package com.example.publicwifimap;
+package com.example.publicwifimap.data;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
