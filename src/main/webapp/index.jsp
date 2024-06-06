@@ -1,3 +1,6 @@
+<%@ page import="com.example.publicwifimap.data.Row" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.example.publicwifimap.data.WifiInfoWithDistance" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -5,12 +8,11 @@
     <title>JSP - Hello World</title>
 
     <style>
-        table{ border-collapse : collapse; }  /*이중선 제거*/
+        table{ border-collapse : collapse; width: 100% }  /*이중선 제거*/
         th,td{
-            width: 100px;
-            height: 50px;
             text-align: center;
             border: 1px solid #000;
+            height: 50px;
 
             /*vertical-align: top;	!* 위 *!*/
             /*vertical-align: bottom;   !* 아래 *!*/
@@ -19,26 +21,22 @@
     </style>
 </head>
 <body>
-    <h1><%= "Hello World!" %></h1>
-    <br/>
-    <a href="test">Hello Servlet</a>
-    <br/>
     <h1>와이파이 정보 구하기</h1>
     <p> <a href="${pageContext.request.contextPath}">홈</a> |
         <a href="${pageContext.request.contextPath}/history">히스토리 목록</a> |
         <a href="${pageContext.request.contextPath}/openapi-list">Open API WIFI 정보</a>
     </p>
-    <p>
+    <form name="form" method="get" action="${pageContext.request.contextPath}/nearby">
         <label for="lat">LAT: </label>
-        <input id="lat" type="number" value="0.0"/>,
+        <input name="lat" id="lat" type="number" value="0.0"/>,
 
         <label for="lnt">LNT: </label>
-        <input id="lnt" type="number" value="0.0"/>
+        <input name="lnt" id="lnt" type="number" value="0.0"/>
 
         <input type="button" value="내 위치 가져오기" onclick="getMyLocation()"/>
-        <input type="button" value="근처 WIFI 정보 보기" onclick=""/>
-    </p>
-
+        <input type="button" value="근처 WIFI 정보 보기" onclick="getNearByWifi()"/>
+    </form>
+    <br/>
     <table>
         <tr>
             <th>거리(Km)</th>
@@ -59,15 +57,62 @@
             <th>Y좌표</th>
             <th>작업 일자</th>
         </tr>
+        <%
+            List<WifiInfoWithDistance> data = (List<WifiInfoWithDistance>)request.getAttribute("data");
+            if(data == null) {
+        %>
         <tr>
-            <td colspan="16">
+            <td colspan="17">
                 위치 정보를 입력한 후에 조회해 주세요.
             </td>
         </tr>
+        <%
+            } else {
+                for(WifiInfoWithDistance d : data) {
+        %>
+        <tr>
+            <td><%= d.getDistance()%></td>
+            <td><%= d.getManagerNo()%></td>
+            <td><%= d.getWardOffice()%></td>
+            <td><%= d.getMainName()%></td>
+            <td><%= d.getAddress1()%></td>
+            <td><%= d.getAddress2()%></td>
+            <td><%= d.getInstallFloor()%></td>
+            <td><%= d.getInstallType()%></td>
+            <td><%= d.getInstallBy()%></td>
+            <td><%= d.getServiceSe()%></td>
+            <td><%= d.getCmcwr()%></td>
+            <td><%= d.getConstructionYear()%></td>
+            <td><%= d.getInoutDoor()%></td>
+            <td><%= d.getRemars3()%></td>
+            <td><%= d.getLatitude()%></td>
+            <td><%= d.getLongitude()%></td>
+            <td><%= d.getWorkDateTime()%></td>
+        </tr>
+        <%
+                }
+            }
+        %>
     </table>
 
 
     <script>
+
+        document.addEventListener("DOMContentLoaded", (e) => {
+            const url = new URLSearchParams(window.location.search);
+            const lat = url.get("lat");
+            const lnt = url.get("lnt");
+
+            let v1 = "0.0";
+            let v2 = "0.0";
+            if(lat != null) {
+                v1 = lat;
+                v2 = lnt;
+            }
+
+            document.getElementById("lat").value = v1;
+            document.getElementById("lnt").value = v2;
+        })
 
         function getMyLocation() {
 
@@ -75,7 +120,9 @@
                 navigator.geolocation.getCurrentPosition(pos => {
                     let latitude = pos.coords.latitude;
                     let longitude = pos.coords.longitude;
-                    alert("현재 위치는 : " + latitude + ", "+ longitude);
+                    document.getElementById('lat').value = latitude;
+                    document.getElementById('lnt').value = longitude;
+                    // alert("현재 위치는 : " + latitude + ", "+ longitude);
                 });
             } else {
                 alert("위치를 불러올 수 없습니다.")
@@ -84,6 +131,14 @@
 
         function getNearByWifi() {
 
+            let lat = document.getElementById("lat").value;
+            let lnt = document.getElementById("lnt").value;
+
+            if(lat == 0 && lnt == 0) {
+                alert("'내 위치'를 먼저 가져와야합니다.");
+            } else {
+                document.form.submit();
+            }
         }
 
     </script>

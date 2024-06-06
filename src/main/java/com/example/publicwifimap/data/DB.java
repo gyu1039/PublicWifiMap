@@ -27,9 +27,48 @@ public class DB {
     }
 
 
-    public static List<TbPublicWifiInfo> getWIFIInfo() {
+    public static List<WifiInfoWithDistance> getNearByWifi(double lat, double lng) {
 
-        return null;
+        String exp = "(6371 * acos(" +
+                        "cos(radians(" + lat + ")) * cos(radians(latitude)) * cos(radians(longitude) - radians(" + lng + ")) + " +
+                        "sin(radians(" + lat + ")) * sin(radians(latitude))" +
+                    "))";
+
+        String sql = "SELECT " + exp + " AS distance, * FROM wifiinfo ORDER BY distance limit 20;";
+
+        List<WifiInfoWithDistance> ret = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while(rs.next()) {
+                WifiInfoWithDistance data = WifiInfoWithDistance.builder()
+                        .distance((int)(rs.getDouble(1) * 10_000) / 10_000.0 + "")
+                        .managerNo(rs.getString(2))
+                        .wardOffice(rs.getString(3))
+                        .mainName(rs.getString(4))
+                        .address1(rs.getString(5))
+                        .address2(rs.getString(6))
+                        .installFloor(rs.getString(7))
+                        .installType(rs.getString(8))
+                        .installBy(rs.getString(9))
+                        .serviceSe(rs.getString(10))
+                        .cmcwr(rs.getString(11))
+                        .constructionYear(rs.getString(12))
+                        .inoutDoor(rs.getString(13))
+                        .remars3(rs.getString(14))
+                        .latitude(rs.getString(15))
+                        .longitude(rs.getString(16))
+                        .workDateTime(rs.getString(17))
+                        .build();
+
+                ret.add(data);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return ret;
     }
 
     public static int checkDataExists() {
