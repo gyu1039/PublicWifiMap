@@ -15,7 +15,7 @@ public class HistoryServlet  extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
-        String url = "WEB-INF/views/ing";
+        String url = "WEB-INF/views/history.jsp";
         RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
 
 //        if(connection == null) {

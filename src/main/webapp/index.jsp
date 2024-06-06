@@ -30,10 +30,10 @@
     </p>
     <p>
         <label for="lat">LAT: </label>
-        <input id="lat" type="number"/>,
+        <input id="lat" type="number" value="0.0"/>,
 
         <label for="lnt">LNT: </label>
-        <input id="lnt" type="number"/>
+        <input id="lnt" type="number" value="0.0"/>
 
         <input type="button" value="내 위치 가져오기" onclick="getMyLocation()"/>
         <input type="button" value="근처 WIFI 정보 보기" onclick=""/>
@@ -60,7 +60,7 @@
             <th>작업 일자</th>
         </tr>
         <tr>
-            <td colspan="10">
+            <td colspan="16">
                 위치 정보를 입력한 후에 조회해 주세요.
             </td>
         </tr>

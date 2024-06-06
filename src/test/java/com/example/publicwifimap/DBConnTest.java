@@ -12,7 +12,7 @@ class DBConnTest {
     void dbTest() throws ClassNotFoundException, SQLException {
 
         Class.forName("org.sqlite.JDBC");
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:WIFIINFO.sqlite");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:/SQLite/WIFIINFO.sqlite");
         System.out.println(connection.isClosed());
     }
 }
