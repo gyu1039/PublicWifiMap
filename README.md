@@ -2,6 +2,8 @@
 
 > 공공 와이파이 정보를 통해 내 위치에서 가장 가까운 와이파이를 알려주는 프로젝트
 
+<br>
+<br>
 
 ## 개발 환경
 + Java8
@@ -11,6 +13,9 @@
 + sqlite
 + Intellij
 + [OpenAPI](https://data.seoul.go.kr/dataList/OA-20883/S/1/datasetView.do)
+
+
+<br>
 
 
 ## 파일 설명
