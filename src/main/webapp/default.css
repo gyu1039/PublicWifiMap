@@ -1,0 +1,17 @@
+
+
+table{ border-collapse : collapse; width: 100% }  /*이중선 제거*/
+
+th {
+    background-color: mediumaquamarine;
+    color: white;
+}
+th,td{
+    text-align: center;
+    border: 1px solid #000;
+    height: 50px;
+
+    /*vertical-align: top;	!* 위 *!*/
+    /*vertical-align: bottom;   !* 아래 *!*/
+    vertical-align: middle;   /* 가운데 */
+}

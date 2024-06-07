@@ -4,8 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class DB {
@@ -82,7 +84,7 @@ public class DB {
             if(rowCount == 0) {
                 List<JsonResult> data = API.getData();
                 if (data != null) {
-                    rowCount = DB.insert(data);
+                    rowCount = DB.insertJsonResult(data);
                 }
             }
 
@@ -94,7 +96,7 @@ public class DB {
         return 0;
     }
 
-    private static int insert(List<JsonResult> data) {
+    private static int insertJsonResult(List<JsonResult> data) {
 
         int count = 0;
 
@@ -195,5 +197,71 @@ public class DB {
         }
 
         return ret;
+    }
+
+
+    public static void insertLocation(String lat, String lnt) {
+
+        String sql = "INSERT INTO location_history(latitude, longitude, viewed, isremoved) values(?, ?, ?, ?);";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, lat);
+            ps.setString(2, lnt);
+            ps.setString(3, LocalDateTime.now().toString());
+            ps.setInt(4, 0);
+
+            int count = ps.executeUpdate();
+            log.info("추가된 행 수: {}", count);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<History> selectLocation() {
+
+        String query = "SELECT * FROM LOCATION_HISTORY ORDER BY ID DESC;";
+        List<History> ret = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                History h = History.builder()
+                        .id(rs.getInt(1))
+                        .latitude(rs.getString(2))
+                        .longitude(rs.getString(3))
+                        .viewed(rs.getString(4))
+                        .isRemoved(rs.getInt(5))
+                        .build();
+
+                if(h.getIsRemoved() == 0) {
+                    ret.add(h);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ret;
+    }
+
+    public static void deleteHistory(int id) {
+
+        String query = "UPDATE LOCATION_HISTORY SET isremoved = 1 WHERE id = ?";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, id);
+
+            int count = ps.executeUpdate();
+
+            log.info("{}", count);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
